@@ -1,0 +1,44 @@
+name: Switch site to "closed" page
+
+on:
+  # JST 23:59 は UTC 14:59
+  schedule:
+    - cron: '58 3 8 9 *'   # 9/30 23:59 JST
+  workflow_dispatch:          # 手動実行ボタンも出す（テスト用に便利）
+
+permissions:
+  contents: write             # main ブランチにコミットして push するため
+
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      # 念のため「2025年のみ実行」ガード（年を変える場合はここを更新）
+      - name: Run only for the target year
+        run: |
+          year_utc=$(date -u +%Y)
+          if [ "$year_utc" != "2025" ]; then
+            echo "This workflow is guarded to run only in 2025. Exiting."
+            exit 0
+          fi
+
+      # 締切版で index.html を上書き（必要に応じてパスを変更）
+      - name: Replace index.html with closed version
+        run: |
+          cp -f pages/closed/index.html index.html
+
+      # 必要に応じて、フォームページ単体を運用しているサブディレクトリも差し替える例
+      # - run: cp -f pages/closed/index.html path/to/your/form/index.html
+
+      - name: Commit & push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Switch to closed page (automated)"
+          git push
