@@ -1,4 +1,4 @@
-name: Switch site to "closed" page
+name: Switch site to "closed" page test
 
 on:
   # JST 23:59 は UTC 14:59
