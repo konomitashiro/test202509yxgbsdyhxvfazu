@@ -3,8 +3,11 @@ name: Switch site to "closed" page
 on:
   # JST 23:59 は UTC 14:59
   schedule:
-    - cron: '38 6 8 9 *'   # 9/30 23:59 JST
-  workflow_dispatch:          # 手動実行ボタンも出す（テスト用に便利）
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+#  schedule:
+ #   - cron: '38 6 8 9 *'   # 9/30 23:59 JST
+  #workflow_dispatch:          # 手動実行ボタンも出す（テスト用に便利）
 
 permissions:
   contents: write             # main ブランチにコミットして push するため
